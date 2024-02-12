@@ -24,6 +24,7 @@ def opt_check(dataname):
 #   root: 初期経路 (リスト)
 #   ex_root: 未訪問都市の番号 (リスト)
 def init_data(dataname):
+    # *** 初期化
     # リスト：順序付きのデータを格納するためのデータ構造です。
     # リストは、要素を追加、削除、変更することができ、さまざまな方法で要素にアクセスできます。
     root = [] # 空のリストを作成　
@@ -31,33 +32,48 @@ def init_data(dataname):
     
     # datanameで指定されたデータファイルを開きます。
     f = open(dataname)
-    lines = f.readlines() # f.readlines(): データファイルの内容を1行ずつ読み込み、リストに格納します
+    lines = f.readlines() # .readlines()メソッド: データファイルの内容を1行ずつ読み込み、リストとして返す
     datalen = len(lines) # 都市の数datalenをlinesの行数から取得します。
     print ("lines[0]")
     print (lines[0]) # リスト型linesの0番目　1 565.0 575.0
     print ("lines[51]")
     print (lines[51]) # リスト型linesの51番目　52 1740.0 245.0
-    # print (lines) # 全体　['1 565.0 575.0\n', '2 25.0 185.0\n', '3 345.0 750.0\n', '4 945.0 685.0\n', ...
+    # print (type(lines))
+    print (lines)
+    
+    # 全体　['1 565.0 575.0\n', '2 25.0 185.0\n', '3 345.0 750.0\n', '4 945.0 685.0\n', ...
     f.close()
     
     data = np.zeros((datalen, 2)) # NumPy配列dataを(datalen, 2)の大きさで初期化
+    print(data)
     # (datalen, 2)の大きさのNumPy配列dataを作成し、すべての要素を0で初期化しています。
     # datalem = 52の場合、 
     # data = np.zeros((52, 2))
+    # [[0. 0.]
+    # [0. 0.]
+    # [0. 0.]
+    # [0. 0.]
+    # ...
+    # [0. 0.]
+    # [0. 0.]]
+    #
     # data[0, 0] = 0
     # data[0, 1] = 0
     # ...
     # data[51, 0] = 0
     # data[51, 1] = 0
     
-    # 都市の座標データが読み込み
+    # *** 都市の座標データが読み込み
     # linesリストに格納された都市座標データを読み込み、data配列に格納する処理
     for i in range (datalen): # iを0からdatalen-1までループ
         ex_root.append(i) # 現在の都市番号iをex_rootリストに追加
         
         # linesリストのi番目の要素を空白文字で分割し、リストspに格納します。
+        # split() メソッドは、文字列を空白文字で分割し、リストとして返します。
         sp = lines[i].split() # リスト型linesの0番目の内容:1 565.0 575.0
+        
         print ("都市の座標データの分割結果読確認")
+        # 配列NO＝読み込み順が都市のNOになっている
         print (sp[0]) #都市NO
         print (sp[1]) #X座標
         print (sp[2]) #Y座標
@@ -197,20 +213,24 @@ def insertion(root, ex_root):
 #   root: 巡る都市の番号のリスト
 def nearest_n(data, datalen, root, ex_root):
     # 初期化:
-    # 現在の都市として0番目の都市をrootリストに追加します。
-    # 0番目の都市をex_rootリストから削除します。
-    root.append(0)
-    ex_root.remove(0)
+    # 現在の都市として、まず最初に配列の0番目の都市をrootリストに追加します。
+    # 0番目の都市をex_rootリスト（未探索都市リスト）から削除します。
+    root.append(0) # 探索した都市、訪問順
+    ex_root.remove(0) #まだ訪問していない都市のNOから0番目をののぞう
 
     # 現在の都市から最も近い都市を探し、rootリストに追加します。
-    # 最も近い都市をex_rootリストから削除します。
+    # 最も近い都市をex_rootリストから削除します
+    #
     # 0番目の都市からdatalen-2番目の都市までのすべての都市について、最も近い都市を探します。
     # datalen-1番目の都市は、最後の都市なので、このループで処理する必要はありません。
-    # 現在の都市とは、rootリストの要素
+    #
+    # 現在の都市とは、rootリストの一番後ろの要素
     # 現在の都市に最も近い都市が追加されると、rootリストの最後の要素が変化します。
     # よって、現在の都市は、rootリストの最後の要素が変化するたびに変化します。
     for i in range(datalen - 1):
+        # range(datalen - 1)は、0からdatalen - 2までの数値を生成
         # 最小距離の探索
+        print(i)
         min_len = 0 # 現在の都市までの最小距離を格納します
         min_Num = 0 # 現在の都市から最も近い都市の番号を格納します
         print("現在の都市NO")
@@ -219,24 +239,45 @@ def nearest_n(data, datalen, root, ex_root):
         print(ex_root)
         # ex_rootリスト内のすべての都市について、現在の都市(rootリストの要素)との距離を計算します
         for j in range(len(ex_root)):
+            print(j)
             print("都市NO")
             print("現在の都市NO")
             print (root[i])
+            print("計算対象都市全体")
+            print(ex_root)
             print("計算対象の都市NO")
             print (ex_root[j])
+
+            print("新たに計算した都市までの距離を求める")
+            print("都市の座標データ全体")
+            print(data)
+            print("現在の都市の座標")
+            print(data[root[i]] )
+            print("計算対象の都市の座標")
+            print(data[ex_root[j]] )
+            # np.linalg.norm([data[root[i]] - data[ex_root[j]]])は、
+            # 2点間data[root[i]＝(x1,y1),data[ex_root[j]＝(x2,y2)の距離を計算する
+            # 現在の都市root[i]とex_rootリスト内の都市jとの距離を計算します。
+            # ２つの都市の座標間の距離をnumpyのノルムを使って計算する
+            print("２つの都市の座標間の距離をnumpyのノルムを使って計算する")
+            new_length = np.linalg.norm([data[root[i]] - data[ex_root[j]] ])
+            print(new_length)
+            
+            print("現時点の最小距離")
+            print(min_len)
+            # 計算結果がより小さい場合、現在の都市から最も近い都市を入れ替える
+            if j == 0 or min_len > new_length:
+                print("入れ替え処理")
+                min_len = new_length
+                min_Num = ex_root[j]
+                print(min_len)
+                print(min_Num)
             print("最小距離")
             print(min_len)
             print("現在の都市から計算した中で近い都市")
             print(min_Num)
-            print("新たに計算した都市までの距離")
-            print(np.linalg.norm([data[root[i]] - data[ex_root[j]]]))
-            # np.linalg.norm([data[root[i]] - data[ex_root[j]]])は、
-            # 現在の都市root[i]とex_rootリスト内の都市jとの距離を計算します。
-            if j == 0 or min_len > np.linalg.norm([data[root[i]] - data[ex_root[j]]]):
-                min_len = np.linalg.norm([data[root[i]] - data[ex_root[j]]])
-                min_Num = ex_root[j]
-                print(min_len)
-                print(min_Num)
+            print("ーーーーーーーーーーーーー")
+            
         # min_Numは、現在の都市から最も近い都市の番号です。この都市をrootリストに追加することで、経路を更新します
         print("現在の都市NO")
         print (root[i])
@@ -277,35 +318,75 @@ def opt_2(data, datalen, root):
         count = 0
         # 辺の入れ替え
         # iとjは、入れ替える2つの辺のインデックスを表します。
+        # ループ１周目の例
+        # i = 0
+        # j = 2
+        # l1=(i, i1): root[0] と root[1] 間の距離
+        # l2=(j, j1): root[2] と root[3] 間の距離
+        # l3=(i, j): root[0] と root[2] 間の距離
+        # l4=(i1, j1): root[1] と root[3] 間の距離
+        #
+        # datalen=10の場合、
+        # for i in range(datalen - 2):
+        #    for j in range(i + 2, datalen):
+        # 外側のループは range(datalen - 2) で定義されているため、
+        # iの値は0から(datalen - 2) -1) まで変化します。これは0から7までの8つの値です。
+        # 内側のループは range(i + 2, datalen) で定義されており、
+        # iの値に依存しています。
+        # 具体的には、i + 2から(datalen-1)までの値を取ります。
+        # したがって、内側のループでは、iの値に2を加えた値からdatalenまでの値がjの値として取られます。  
+        # iは、0から７まで８回回る
+        # i = 0 の場合: j = 2, 3, 4, 5, 6, 7, 8, 9
+        # i = 1 の場合: j = 3, 4, 5, 6, 7, 8, 9
+        # i = 2 の場合: j = 4, 5, 6, 7, 8, 9
+        # i = 3 の場合: j = 5, 6, 7, 8, 9
+        # i = 4 の場合: j = 6, 7, 8, 9
+        # i = 5 の場合: j = 7, 8, 9
+        # i = 6 の場合: j = 8, 9
+        # i = 7 の場合: j = 9
+        #
+        # range(n)は、0からn−１の値を生成する
+        # range(0, 5) --> 0 1 2 3 4
+        # range(a,n)は、aからn-1の値を生成する
+        # range(4,7) --> 4 5 6
+        # 
+                
+                
         for i in range(datalen - 2):
             i1 = i + 1
             for j in range(i + 2, datalen):
+                # jは、i+2からスタートする
                 if j == datalen - 1:
                     j1 = 0
                 else:
                     j1 = j + 1
+                print("i")
+                print("i1")
+                print("j")
+                print("j1")
                 print(i)
                 print(i1)
                 print(j)
                 print(j1)
                 if i != 0 or j1 != 0:
                     # 辺の長さを計算
+                   
+                    # ２つの都市の座標間の距離をnumpyのノルムを使って計算する
+                    # np.linalg.norm([data[root[i]] - data[ex_root[j]]])は、
+                    # 2点間data[root[i]＝(x1,y1),data[ex_root[j]＝(x2,y2)の距離を計算する
+                    print("２つの都市の座標間の距離をnumpyのノルムを使って計算する")
+                    
                     # l1とl2は、元の経路における2つの辺の長さを表します。
-                    print(i)
-                    print(i1)
-                    print(j)
-                    print(j1)
                     l1 = np.linalg.norm([data[root[i]] - data[root[i1]]])
                     l2 = np.linalg.norm([data[root[j]] - data[root[j1]]])
+                    
                     # l3とl4は、辺を入れ替えた後の経路における2つの辺の長さを表します。
                     l3 = np.linalg.norm([data[root[i]] - data[root[j]]])
                     l4 = np.linalg.norm([data[root[i1]] - data[root[j1]]])
-                    print(l1)
-                    print(l2)
-                    print(l3)
-                    print(l4)
+                    
                     # 入れ替えた方が短くなる場合
                     if l1 + l2 > l3 + l4:
+                        print("入れ替えた方が短くなる場合")
                         # 辺を入れ替える
                         # new_rootは、i1からjまでの部分リストを逆順にしたリストです。
                         new_root = root[i1:j+1]
@@ -369,13 +450,25 @@ if __name__ == '__main__':
     # root: 初期経路。都市の番号を順番に格納した配列です。0からdatalen-1までの数字が順番に格納されます。(これは、初期経路がまだ決まっていないことを意味します。)
     # ex_root: 未訪問都市の番号を格納した配列です。root配列に含まれていない数字が全て格納されます。(これは、全ての都市が未訪問であることを意味します。)
     data, datalen, root, ex_root = init_data(dataname)
-    ''' これと同じ
+    ''' 
+    返り値が複数ある場合は、タプルになる（pythonの仕様）
+    これと同じ
     ret = init_data(dataname)
     data = ret[0]
     datalen = ret[1]
     root = ret[2]
     ex_root = ret[3]
     '''
+
+    print("読み込み確認")
+    print(data)
+    print("")
+    print(datalen)
+    print("")
+    print(root)
+    print("")
+    print(ex_root)
+
 
     if type == 1:
         root = nearest_n(data, datalen, root, ex_root)
