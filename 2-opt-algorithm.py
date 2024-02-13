@@ -90,6 +90,9 @@ def init_data(dataname):
         # ...
         # data[51, 0] = 1740
         # data[51, 1] = 245
+        print("data[i]")
+        print(data[i])
+        
         print("data[i,0]")
         print(data[i,0])
         print("data[i,1]")
@@ -285,7 +288,8 @@ def nearest_n(data, datalen, root, ex_root):
         print(min_Num)
         root.append(min_Num) # 経路への追加:最も近い都市min_Numをrootリストに追加します
         ex_root.remove(min_Num) # 未訪問都市リストの更新:最も近い都市min_Numをex_rootリストから削除します
-
+    print(root)
+    print(ex_root)
     return root
 
 #2-opt法
@@ -375,25 +379,60 @@ def opt_2(data, datalen, root):
                     # np.linalg.norm([data[root[i]] - data[ex_root[j]]])は、
                     # 2点間data[root[i]＝(x1,y1),data[ex_root[j]＝(x2,y2)の距離を計算する
                     print("２つの都市の座標間の距離をnumpyのノルムを使って計算する")
-                    
+                    print("i")
+                    print("i1")
+                    print("j")
+                    print("j1")
+                    print(i)
+                    print(i1)
+                    print(j)
+                    print(j1)
                     # l1とl2は、元の経路における2つの辺の長さを表します。
+                    print(data[root[i]])
+                    print(data[root[i1]])
+                    print([ data[root[i]] - data[root[i1]] ])
+                    #print((data[root[i]] - data[root[i1]] )
                     l1 = np.linalg.norm([data[root[i]] - data[root[i1]]])
+                    print(l1)
+                    
+                    print(data[root[j]])
+                    print(data[root[j1]])
+                    print([ data[root[j]] - data[root[j1]] ])
                     l2 = np.linalg.norm([data[root[j]] - data[root[j1]]])
+                    print(l2)
                     
                     # l3とl4は、辺を入れ替えた後の経路における2つの辺の長さを表します。
+                    print(data[root[i]])
+                    print(data[root[j]])
+                    print([ data[root[i]] - data[root[j]] ])
                     l3 = np.linalg.norm([data[root[i]] - data[root[j]]])
-                    l4 = np.linalg.norm([data[root[i1]] - data[root[j1]]])
+                    print(l3)
                     
+                    print(data[root[i1]])
+                    print(data[root[j1]])
+                    print([ data[root[i1]] - data[root[j1]] ])
+                    l4 = np.linalg.norm([data[root[i1]] - data[root[j1]]])
+                    print(l4)
+                    print("")
+                    print(l1+l2)
+                    print(l3+l4)
                     # 入れ替えた方が短くなる場合
                     if l1 + l2 > l3 + l4:
                         print("入れ替えた方が短くなる場合")
                         # 辺を入れ替える
                         # new_rootは、i1からjまでの部分リストを逆順にしたリストです。
+                        print(root)
+                        print(i1)
+                        print(root[i1])
+                        print(j+1)
+                        # print(root[j+1])
                         new_root = root[i1:j+1]
+                        print(new_root)
                         # root[i1:j+1]は、new_rootで置き換えられます。
+                        print(new_root[::-1])
                         root[i1:j+1] = new_root[::-1]
                         print(root)
-                        print(new_root)
+                        
                         count += 1
         total += count
         print (root)
